@@ -55,3 +55,23 @@ This script processes MIP data by refining the fit range and performing a Poisso
 - Users can adjust `temp_mip_fit_cut.csv` manually if necessary.
 - The refined fit ensures better isolation of the **single-muon MIP peak**.
 
+# Pedestal Fix (`pedestal_fix.py`)
+
+## Description
+This script refines the pedestal values by performing a second Gaussian fit based on the initial standard deviation obtained from the **First Glance** step. The goal is to ensure a more accurate pedestal estimation.
+
+## Process:
+1. **Initial Selection Based on First Glance Fit**  
+   - Uses the **standard deviation from the first fit** as a filter range.
+2. **Refined Gaussian Fit**  
+   - Applies a second Gaussian fit within this filtered range.
+3. **Correction of Pedestal Range Issue**  
+   - The original pedestal range was too broad; this refinement ensures better accuracy.
+4. **Output**  
+   - The refined pedestal values are visualized and saved in **`plots/pedestal_plots.pdf`**.
+
+## Notes:
+- This step improves pedestal precision by removing outliers and noise.
+- The script reads pedestal data from **`calibrations/pedestals.csv`**.
+- The source data file used is **`ntuple_decoded_hcal_run_287_20220425_0738127.root`**.
+
