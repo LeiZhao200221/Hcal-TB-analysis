@@ -17,7 +17,7 @@ class calculateMIPsManual:
 
         self.in_data = pd.read_csv(self.data_file_name)
         self.in_peds = pd.read_csv(self.pedestal_file_name)
-        self.in_mip_fit_cut = pd.read_csv(self.temp_mip_fit_cut_file)
+        self.in_mip_fit_cut = pd.read_csv(self.mip_fit_cut_file)
 
         if not os.path.exists(self.out_directory):
             os.makedirs(self.out_directory)
@@ -139,5 +139,5 @@ if __name__ == "__main__":
     out_directory = 'MIP_revision/revision'
     plots_directory = 'MIP_revision/Plot'
 
-    calc_mip_manual = calculateMIPsManual(data_file_path, pedestal_file_path, temp_mip_fit_cut_path, out_directory, plots_directory)
+    calc_mip_manual = calculateMIPsManual(data_file_path, pedestal_file_path, mip_fit_cut_path, out_directory, plots_directory)
     calc_mip_manual.calculate_mip()
