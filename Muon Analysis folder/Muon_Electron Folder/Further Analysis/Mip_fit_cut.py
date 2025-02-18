@@ -8,16 +8,16 @@ from matplotlib.backends.backend_pdf import PdfPages
 from matplotlib.ticker import MultipleLocator
 
 class calculateMIPsManual:
-    def __init__(self, data_file_name, pedestal_file_name, mip_fit_cut_file, out_directory, plots_directory):
+    def __init__(self, data_file_name, pedestal_file_name, temp_mip_fit_cut_file, out_directory, plots_directory):
         self.data_file_name = data_file_name
         self.pedestal_file_name = pedestal_file_name
-        self.mip_fit_cut_file = mip_fit_cut_file
+        self.temp_mip_fit_cut_file = temp_mip_fit_cut_file
         self.out_directory = out_directory
         self.plots_directory = plots_directory
 
         self.in_data = pd.read_csv(self.data_file_name)
         self.in_peds = pd.read_csv(self.pedestal_file_name)
-        self.in_mip_fit_cut = pd.read_csv(self.mip_fit_cut_file)
+        self.in_mip_fit_cut = pd.read_csv(self.temp_mip_fit_cut_file)
 
         if not os.path.exists(self.out_directory):
             os.makedirs(self.out_directory)
@@ -133,11 +133,11 @@ class calculateMIPsManual:
         mip_df.to_csv(os.path.join(self.out_directory, 'miprevision.csv'), index=False)
 
 if __name__ == "__main__":
-    mip_fit_cut_path = 'MIP_revision/mip_fit_cut_for_range.csv'
+    temp_mip_fit_cut_path = 'MIP_revision/temp_mip_fit_cut.csv'
     data_file_path = 'analysis_files/run_20220425_fpga_run.csv'
     pedestal_file_path = 'calibrations/pedestals.csv'
     out_directory = 'MIP_revision/revision'
     plots_directory = 'MIP_revision/Plot'
 
-    calc_mip_manual = calculateMIPsManual(data_file_path, pedestal_file_path, mip_fit_cut_path, out_directory, plots_directory)
+    calc_mip_manual = calculateMIPsManual(data_file_path, pedestal_file_path, temp_mip_fit_cut_path, out_directory, plots_directory)
     calc_mip_manual.calculate_mip()
