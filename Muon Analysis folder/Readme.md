@@ -7,7 +7,7 @@ This script moves any file from an arbitrary location to a designated folder and
 - `do_one_bar` and `do_alignment` are **disabled by default**, but users can modify them as needed.
 - The calibration file corresponds to **Phase 3 Test Beam data** from **Run 280 to 315 (April 2022)**. For details on Phase 3, refer to the notebook.
 
-# pedestal_mip.py
+# 2. pedestal_mip.py
 
 ## Description  
 This script calls Joe’s `calculatePedestals` and `calculateMIPs` modules to compute pedestal values and MIP distributions from NTuple data.  
@@ -20,7 +20,7 @@ This script calls Joe’s `calculatePedestals` and `calculateMIPs` modules to co
 
 ---
 
-# mip_fit_cut.py  
+# 3.mip_fit_cut.py  
 
 ## Description  
 This script refines the MIP fit range using a **Poisson-based Langau fit** to eliminate multi-muon and electron contamination.  
@@ -34,10 +34,10 @@ This script refines the MIP fit range using a **Poisson-based Langau fit** to el
 
 ---
 
-# pedestal_fix.py  
+# 4. pedestal_fix.py  
 
 ## Description  
-This script refines pedestal values by performing a **second Gaussian fit** based on the initial standard deviation obtained from the **First Glance** step.  
+This script refines pedestal values by performing another **Gaussian fit** based on the initial standard deviation obtained from the **First Glance** step.  
 
 ## Notes  
 - The new fit range is determined using the **standard deviation from the first fit**.  
@@ -47,7 +47,7 @@ This script refines pedestal values by performing a **second Gaussian fit** base
 
 ---
 
-# final_factor.py  
+# 5.final_factor.py  
 
 ## Description  
 This script **corrects pedestal values** by adding a **new ADC selection range** and computes the **muon-calibrated factor values**.  
@@ -55,4 +55,21 @@ This script **corrects pedestal values** by adding a **new ADC selection range**
 ## Notes  
 - A new column **`new_range = pedestal + 15 * std_dev`** is added to `pedestals.csv`.  
 - This corrected pedestal file is saved as `calibrations/pedestals_updated.csv`.  
-- The muon calibration factor is computed as `factor = 612 / mpv` and saved in `/factor.csv`.  
+- The muon calibration factor is computed as `factor = 612 / mpv` and saved in `/factor.csv`.
+
+---
+# 6.ADC_Selection.py
+
+## Description  
+This script filters events based on ADC sum values and removing TOT conditions using updated pedestal thresholds. Till now, there is no difference between electron and Muon analysis and this is the last step should be undertaken for First Glance part.
+
+## Notes  
+- Reads the pedestal file **`calibrations/pedestals1.csv`**, which contains `new_range` thresholds.  
+- Reads the input event data from **`analysis_files/run_20220425_fpga_run.csv`**.  
+- Filters events where:  
+  - `adc_sum_end0` exceeds `new_range_end0` **or**  
+  - `adc_sum_end1` exceeds `new_range_end1`, **and**  
+  - Both `tot_end0` and `tot_end1` are **zero**.  
+- Saves the filtered results to **`Datafortable/cleaned.csv`**.  
+- The final output keeps only `pf_event`, `layer`, `strip`, `adc_sum_end0`, and `adc_sum_end1`.  
+
