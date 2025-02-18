@@ -8,10 +8,10 @@ from matplotlib.backends.backend_pdf import PdfPages
 from matplotlib.ticker import MultipleLocator
 
 class calculateMIPsManual:
-    def __init__(self, data_file_name, pedestal_file_name, temp_mip_fit_cut_file, out_directory, plots_directory):
+    def __init__(self, data_file_name, pedestal_file_name, mip_fit_cut_file, out_directory, plots_directory):
         self.data_file_name = data_file_name
         self.pedestal_file_name = pedestal_file_name
-        self.temp_mip_fit_cut_file = temp_mip_fit_cut_file
+        self.mip_fit_cut_file = mip_fit_cut_file
         self.out_directory = out_directory
         self.plots_directory = plots_directory
 
@@ -133,7 +133,7 @@ class calculateMIPsManual:
         mip_df.to_csv(os.path.join(self.out_directory, 'miprevision.csv'), index=False)
 
 if __name__ == "__main__":
-    temp_mip_fit_cut_path = 'MIP_revision/temp_mip_fit_cut.csv'
+    mip_fit_cut_path = 'MIP_revision/mip_fit_cut_for_range.csv'
     data_file_path = 'analysis_files/run_20220425_fpga_run.csv'
     pedestal_file_path = 'calibrations/pedestals.csv'
     out_directory = 'MIP_revision/revision'
