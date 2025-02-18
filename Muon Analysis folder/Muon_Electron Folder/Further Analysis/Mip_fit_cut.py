@@ -133,7 +133,7 @@ class calculateMIPsManual:
         mip_df.to_csv(os.path.join(self.out_directory, 'miprevision.csv'), index=False)
 
 if __name__ == "__main__":
-    temp_mip_fit_cut_path = 'MIP_revision/temp_mip_fit_cut.csv'
+    temp_mip_fit_cut_path = 'MIP_revision/mip_fit_cut_for_range.csv'
     data_file_path = 'analysis_files/run_20220425_fpga_run.csv'
     pedestal_file_path = 'calibrations/pedestals.csv'
     out_directory = 'MIP_revision/revision'
