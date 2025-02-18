@@ -7,71 +7,52 @@ This script moves any file from an arbitrary location to a designated folder and
 - `do_one_bar` and `do_alignment` are **disabled by default**, but users can modify them as needed.
 - The calibration file corresponds to **Phase 3 Test Beam data** from **Run 280 to 315 (April 2022)**. For details on Phase 3, refer to the notebook.
 
-# Pedestal and MIP Calculation (`pedestal_mip.py`)
+# pedestal_mip.py
 
-## Description
-This script calls Joe’s **pedestal analysis module** and **MIP analysis module** to compute pedestal values and MIP distributions from the NTuple data.
+## Description  
+This script calls Joe’s `calculatePedestals` and `calculateMIPs` modules to compute pedestal values and MIP distributions from NTuple data.  
 
-## Process:
-1. **Compute Pedestal:**  
-   - Uses `calculatePedestals` to analyze the ROOT file and generate pedestal values.
-   - The pedestal results are saved as `calibrations/pedestals.csv`.
+## Notes  
+- The pedestal file **must be generated first** before running the MIP analysis.  
+- The pedestal results are saved in `calibrations/pedestals.csv`.  
+- The MIP analysis reads `pedestals.csv` and outputs the results to `calibrations/mip_fit_cut.csv`.  
+- `do_one_bar` and `plot_mips` are **disabled by default**, but users can modify them as needed.  
 
-2. **Compute MIP:**  
-   - Uses `calculateMIPs` to process the pedestal-corrected data.
-   - Reads the pedestal file (`pedestals.csv`) from the previous step.
-   - Outputs MIP analysis results to `calibrations/mip_fit_cut.csv`.
+---
 
-## Notes:
-- The **pedestal file is required** for the MIP analysis.
-- Users can modify parameters such as `do_one_bar` and `plot_mips` as needed.
+# mip_fit_cut.py  
 
+## Description  
+This script refines the MIP fit range using a **Poisson-based Langau fit** to eliminate multi-muon and electron contamination.  
 
-# MIP Fit Cut (`mip_fit_cut.py`)
+## Notes  
+- The script requires an initial fit range file: `MIP_revision/temp_mip_fit_cut.csv`.  
+- This file was manually created after running `pedestal_mip.py` from the **First Glance** folder.  
+- The **first peak** in the MIP distribution plots was manually identified to set the `low` and `upper` fit range.  
+- The refined fit updates `temp_mip_fit_cut.csv` and saves MIP analysis results in `MIP_revision/miprevision.csv`.  
+- Histogram plots of the fits are saved in `MIP_revision/Plot/all_plots.pdf`.  
 
-## Description
-This script processes MIP data by refining the fit range and performing a Poisson-based Langau fit to eliminate multi-muon and electron contamination.
+---
 
-## Data Source
-- The script requires an **initial fit range file**:  
-  `MIP_revision/temp_mip_fit_cut.csv`
-- This file was created after **running `pedestal_mip.py`** from the `First Glance` folder.
-- The initial fit range (lower and upper bounds) was **manually identified** based on the first peak in the MIP distribution plots.
+# pedestal_fix.py  
 
-## Processing Steps
-1. **Pedestal Subtraction**:  
-   - Reads `calibrations/pedestals.csv` to correct ADC values.
-2. **Filtering & Selection**:  
-   - Uses the manually set `low` and `upper` fit range from `temp_mip_fit_cut.csv`.(Hope someone could develop a code to solve this)
-   - Removes **multi-muon and electron contamination**.
-3. **Poisson-Based Langau Fit**:  
-   - Performs a refined fit within the selected range.
-   - Updates `temp_mip_fit_cut.csv` with the new refined fit range.
-4. **Result Output**:  
-   - Saves the updated MIP analysis to `MIP_revision/miprevision.csv`.
-   - Generates **histogram plots** of the fits in `MIP_revision/Plot/all_plots.pdf`.
+## Description  
+This script refines pedestal values by performing a **second Gaussian fit** based on the initial standard deviation obtained from the **First Glance** step.  
 
-## Notes
-- Users can adjust `temp_mip_fit_cut.csv` manually if necessary.
-- The refined fit ensures better isolation of the **single-muon MIP peak**.
+## Notes  
+- The new fit range is determined using the **standard deviation from the first fit**.  
+- The refined pedestal values are saved in `plots/pedestal_plots.pdf`.  
+- The script reads pedestal data from `calibrations/pedestals.csv`.  
+- The original pedestal range was **too broad**; this refinement ensures better accuracy.  
 
-# Pedestal Fix (`pedestal_fix.py`)
+---
 
-## Description
-This script refines the pedestal values by performing a second Gaussian fit based on the initial standard deviation obtained from the **First Glance** step. The goal is to ensure a more accurate pedestal estimation.
+# final_factor.py  
 
-## Process:
-1. **Initial Selection Based on First Glance Fit**  
-   - Uses the **standard deviation from the first fit** as a filter range.
-2. **Refined Gaussian Fit**  
-   - Applies a second Gaussian fit within this filtered range.
-3. **Correction of Pedestal Range Issue**  
-   - The original pedestal range was too broad; this refinement ensures better accuracy.
-4. **Output**  
-   - The refined pedestal values are visualized and saved in **`plots/pedestal_plots.pdf`**.
+## Description  
+This script **corrects pedestal values** by adding a **new ADC selection range** and computes the **muon-calibrated factor values**.  
 
-## Notes:
-- This step improves pedestal precision by removing outliers and noise.
-- The script reads pedestal data from **`calibrations/pedestals.csv`**.
-- The source data file used is **`ntuple_decoded_hcal_run_287_20220425_0738127.root`**.
-
+## Notes  
+- A new column **`new_range = pedestal + 15 * std_dev`** is added to `pedestals.csv`.  
+- This corrected pedestal file is saved as `calibrations/pedestals_updated.csv`.  
+- The muon calibration factor is computed as `factor = 612 / mpv` and saved in `/factor.csv`.  
