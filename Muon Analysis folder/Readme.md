@@ -70,6 +70,38 @@ This script filters events based on ADC sum values and removing TOT conditions u
   - `adc_sum_end0` exceeds `new_range_end0` **or**  
   - `adc_sum_end1` exceeds `new_range_end1`, **and**  
   - Both `tot_end0` and `tot_end1` are **zero**.  
-- Saves the filtered results to **`Datafortable/cleaned.csv`**.  
+- Saves the filtered results to **`cleaned.csv`**.  
 - The final output keeps only `pf_event`, `layer`, `strip`, `adc_sum_end0`, and `adc_sum_end1`.  
+
+---
+# 7.energy_calculation.py  (electron selection ends here)
+
+## Description  
+This script calculates the calibrated energy values by:  
+1. **Subtracting pedestal values** from ADC sums.  
+2. **Applying MIP calibration factors** to obtain corrected ADC values.  
+3. **Converting ADC values to energy** using a scaling factor.  
+
+## Notes  
+- Reads input event data from **`cleaned.csv`**.  
+- Uses pedestal values from **`calibrations/pedestals.csv`** to correct ADC sums.  
+- Reads MIP calibration values from **`calibrations/mip.csv`**.  
+- Uses muon calibration factors from **`factor.csv`**.  
+- Filters out events where **energy values (`eng0` or `eng1`) are negative**.  Although ADC selection will be effectively removing all negative value here, just in case, an extra check is executed here.
+- Saves the final calibrated energy data in **`cal_data.csv`** for further use. (like, Layer energy deposit Pattern/ Strip energy deposit pattern).
+- There is a factor 612 which I select as standard for calibration. This value is close to the mean/median value of data in Run 287, 04/2022. It should be carefully selected by different value for different period. Both value here and 612 in section 5 should be changed when data from different period are introduced.
+---
+#8.muon_selection.py (a further selection should be done for muon)
+
+## Description  
+This script applies a **Muon-specific selection** to ensure event purity by:  
+1. **Filtering events where only one strip per layer is hit** to eliminate electron contamination and multiple-muon events.  
+2. **Applying an energy selection (1.84 - 7.83 MIP energy)** to retain only single-strip, single-hit, single-muon events.  
+
+## Notes  
+- Muons **should not interact significantly** in the HCal, so single-strip responses ensure **pure muon selection**.  
+- Multiple muons hitting the same strip may deposit higher energy, so an energy window of **0.4 - 1.6 MIP (1.84 - 7.83 absolute energy)** is applied.  
+- The script reads input data from **`cal_data.csv`**.  
+- The final selected data is saved in **`cal_data_muon.csv`**.  
+
 
