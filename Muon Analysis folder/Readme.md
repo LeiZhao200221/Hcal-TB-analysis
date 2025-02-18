@@ -25,3 +25,33 @@ This script calls Joe’s **pedestal analysis module** and **MIP analysis module
 ## Notes:
 - The **pedestal file is required** for the MIP analysis.
 - Users can modify parameters such as `do_one_bar` and `plot_mips` as needed.
+
+
+# MIP Fit Cut (`mip_fit_cut.py`)
+
+## Description
+This script processes MIP data by refining the fit range and performing a Poisson-based Langau fit to eliminate multi-muon and electron contamination.
+
+## Data Source
+- The script requires an **initial fit range file**:  
+  `MIP_revision/temp_mip_fit_cut.csv`
+- This file was created after **running `pedestal_mip.py`** from the `First Glance` folder.
+- The initial fit range (lower and upper bounds) was **manually identified** based on the first peak in the MIP distribution plots.
+
+## Processing Steps
+1. **Pedestal Subtraction**:  
+   - Reads `calibrations/pedestals.csv` to correct ADC values.
+2. **Filtering & Selection**:  
+   - Uses the manually set `low` and `upper` fit range from `temp_mip_fit_cut.csv`.(Hope someone could develop a code to solve this)
+   - Removes **multi-muon and electron contamination**.
+3. **Poisson-Based Langau Fit**:  
+   - Performs a refined fit within the selected range.
+   - Updates `temp_mip_fit_cut.csv` with the new refined fit range.
+4. **Result Output**:  
+   - Saves the updated MIP analysis to `MIP_revision/miprevision.csv`.
+   - Generates **histogram plots** of the fits in `MIP_revision/Plot/all_plots.pdf`.
+
+## Notes
+- Users can adjust `temp_mip_fit_cut.csv` manually if necessary.
+- The refined fit ensures better isolation of the **single-muon MIP peak**.
+
