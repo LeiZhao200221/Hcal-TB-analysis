@@ -3,7 +3,7 @@ import pandas as pd
 # Define file paths
 input_file_path = "analysis_files/run_20220425_fpga_run.csv"
 pedestal_file_path = "calibrations/pedestals.csv"
-output_folder = "Datafortable"
+output_folder = "folder"
 output_file = f"{output_folder}/cleaned.csv"
 
 # Read pedestal file
